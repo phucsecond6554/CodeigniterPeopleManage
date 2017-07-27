@@ -10,11 +10,13 @@
     {
       parent::__construct();
       $this->table_name = 'People_Data';
+      $this->load->database();
     }
 
     public function get_all_data()
     {
-      return $this->db->get($this->table_name);
+      $query = $this->db->get($this->table_name);
+      return $query->result();
     }
 
     public function insert_data($peopledata)

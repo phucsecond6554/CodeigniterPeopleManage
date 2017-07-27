@@ -13,6 +13,21 @@
       $this->load->database();
     }
 
+    /*
+      * Ham get_userdata la ham lay thong tin cua user
+      * Ham tra ve ket qua la ID, UserType cua user
+      * UserType la loai nguoi dung, '1' La admin, '0' La thanh vien binh thuong
+    */
+
+    public function get_userdata($username)
+    {
+      $this->db->select('id,usertype');
+      $this->db->where('username',$username);
+      $query = $this->db->get($this->table_name);
+
+      return $query->row();
+    }
+
 /*
   # Ham check_valid_user dung de kiem tra username da co chua
   # Neu chua co la hop le co the dang ky duoc (return true)
@@ -45,7 +60,7 @@
       {
         return false; // Thi return false khong cho phep dang nhap
       }else {     // Nguoc lai thi co username kiem tra xem password co trung khop khong
-        $query = $this->db->get($this->table_name);
+        $query = $this->db->get();
         $row = $query->row(); // Get data cua username do
 
         return password_verify($password,$row->pass); // Kiem tra password
