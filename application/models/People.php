@@ -19,6 +19,15 @@
       return $query->result();
     }
 
+    public function get_member_data($id)
+    {
+      $this->db->select('id,name,birthday,email,job');
+      $this->db->where('id',$id);
+      $query = $this->db->get($this->table_name);
+
+      return $query->row();
+    }
+
     public function insert_data($peopledata)
     {
       return $this->db->insert($this->table_name, $peopledata);

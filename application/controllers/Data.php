@@ -1,16 +1,24 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
   /**
    * Controller nay dung de xu ly them sua xoa danh sach bla bla
    */
   class Data extends CI_Controller
   {
-
+    protected $_data;
     function __construct()
     {
       parent::__construct();
       $this->load->library(array('session','form_validation'));
       $this->load->helper('url');
       $this->load->model('People');
+
+      if(!$this->session->userdata('username'))
+      {
+        redirect('Sign/sign_in');
+      }
     }
 
     public function index()
@@ -19,9 +27,10 @@
       {
         redirect('Sign/index'); // Neu chua tro ve trang dang nhap
       }else { // Neu roi thi goi danh sach bla
-        $member_data = array();
-        $member_data['member'] = $this->People->get_all_data(); // Lay danh sach thanh vien
-        $this->load->view('data_list', $member_data); // Goi trang danh sach
+        $this->_data['member']= $this->People->get_all_data(); // Lay danh sach thanh vien
+        $this->_data['mess'] = $this->session->flashdata('message');
+        $this->_data['usertype'] = $this->session->userdata('usertype');
+        $this->load->view('data_list', $this->_data); // Goi trang danh sach
       }
     }
 
@@ -39,10 +48,83 @@
       {
         $this->load->view('Member/add_member');
       }else {
+        $birth = $this->input->post('year');
+        $birth .= '/'.$this->input->post('month');
+        $birth .= '/'.$this->input->post('date'); // Ngay sinh
+
+        $insertdata = array(
+          'name' => $this->input->post('name'),
+          'job' => $this->input->post('job'),
+          'email' => $this->input->post('email'),
+          'birthday' => $birth
+        );
+
+        if($this->People->insert_data($insertdata))
+        {
+          $this->session->set_flashdata('message','Them du lieu thanh cong');
+          redirect('Data');
+        }
 
       }
     }
 
+    public function Delete($id)
+    {
+      if($this->session->userdata('usertype') != 1)
+      {
+        die('Ban khong duoc quyen xoa data');
+      } // Khong duoc quyen xoa du lieu
+
+      if($this->People->delete_data($id))
+      {
+        $this->session->set_flashdata('message','Xoa du lieu thanh cong');
+        redirect('Data/index');
+      }else {
+        $this->session->set_flashdata('message','Co loi khi xoa du lieu');
+        redirect('Data/index');
+      }
+    }
+
+    public function Edit($id)
+    {
+      $this->_data['member'] = $this->People->get_member_data($id);
+
+      $this->form_validation->set_rules('name','Name','required');
+      $this->form_validation->set_rules('job','Job','required');
+      $this->form_validation->set_rules('email','Email','required|valid_email');
+      $this->form_validation->set_rules('add_member_submit','Add Member','callback_checkdate');
+
+      if($this->form_validation->run() == false)
+      {
+        $this->load->view('Member/edit_member',$this->_data);
+      }else {
+        $birth = $this->input->post('year');
+        $birth .= '/'.$this->input->post('month');
+        $birth .= '/'.$this->input->post('date'); // Ngay sinh
+
+        $updatedata = array(
+          'name' => $this->input->post('name'),
+          'job' => $this->input->post('job'),
+          'email' => $this->input->post('email'),
+          'birthday' => $birth
+        );
+
+        if($this->People->update_data($updatedata, $id))
+        {
+          $this->session->set_flashdata('message','Update du lieu thanh cong');
+          redirect('Data/index');
+        }else {
+          $this->session->set_flashdata('message','Co loi khi update du lieu');
+          redirect('Data/index');
+        }
+      }
+
+
+    }
+
+    /*
+      * checkdate de kiem tra tinh hop le cua ngay thang
+    */
     public function checkdate()
     {
       $date = $this->input->post('date');

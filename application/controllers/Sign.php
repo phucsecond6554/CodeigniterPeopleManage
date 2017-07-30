@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
   /**
    * Controller nay de xu ly viec dang nhap, dang ky
    */
