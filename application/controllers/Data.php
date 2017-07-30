@@ -23,6 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     public function index()
     {
+      $this->_data['title'] = 'Data List';
+      $this->_data['subview'] = 'Member/data_list';
       if(!$this->session->userdata('username')) // Kiem tra da dang nhap chua
       {
         redirect('Sign/index'); // Neu chua tro ve trang dang nhap
@@ -30,7 +32,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $this->_data['member']= $this->People->get_all_data(); // Lay danh sach thanh vien
         $this->_data['mess'] = $this->session->flashdata('message');
         $this->_data['usertype'] = $this->session->userdata('usertype');
-        $this->load->view('data_list', $this->_data); // Goi trang danh sach
+        $this->load->view('main_layout', $this->_data); // Goi trang danh sach
       }
     }
 
@@ -39,6 +41,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     */
     public function add_member()
     {
+      $this->_data['title'] = 'Them thanh vien';
+      $this->_data['subview'] = 'Member/add_member';
+
+      // Set rules form validation
       $this->form_validation->set_rules('name','Name','required');
       $this->form_validation->set_rules('job','Job','required');
       $this->form_validation->set_rules('email','Email','required|valid_email');
@@ -46,7 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
       if($this->form_validation->run() === false)
       {
-        $this->load->view('Member/add_member');
+        $this->load->view('main_layout', $this->_data);
       }else {
         $birth = $this->input->post('year');
         $birth .= '/'.$this->input->post('month');
@@ -87,6 +93,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     public function Edit($id)
     {
+      $this->_data['title'] = 'Sua thong tin thanh vien';
+      $this->_data['subview'] = 'Member/edit_member';
+
       $this->_data['member'] = $this->People->get_member_data($id);
 
       $this->form_validation->set_rules('name','Name','required');
@@ -96,7 +105,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
       if($this->form_validation->run() == false)
       {
-        $this->load->view('Member/edit_member',$this->_data);
+        $this->load->view('main_layout',$this->_data);
       }else {
         $birth = $this->input->post('year');
         $birth .= '/'.$this->input->post('month');

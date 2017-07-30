@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
    */
   class Sign extends CI_Controller
   {
-
+    private $_data;
     function __construct()
     {
       parent::__construct();
@@ -19,10 +19,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     {
       if($this->session->userdata('username'))
       {
-        //$this->load->view('data_list');
         redirect('Data');
       }else {
-        $this->load->view('Signin');
+        redirect('Sign/sign_in');
       }
     }
 
@@ -31,6 +30,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
     public function sign_in()
     {
+      $this->_data['title'] = 'Sign in';
+      $this->_data['subview'] = 'Account/Signin';
       //Set rules kiem tra thong tin nhap vao
       $this->form_validation->set_rules('username','Username','trim|required');
       $this->form_validation->set_rules('password','Password','trim|required');
@@ -38,7 +39,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
       if($this->form_validation->run() == false) // Neu dang nhap khong thanh cong
       {
-        $this->load->view('Signin');
+        $this->load->view('main_layout', $this->_data);
       }else { // Dang nhap thanh cong
         $username = $this->input->post('username'); // Lay username
 
@@ -58,6 +59,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
     public function sign_up()
     {
+      $this->_data['title'] = 'Sign up';
+      $this->_data['subview'] = 'Account/Signup';
+
       //Set rule thong tin dang ky
       $this->form_validation->set_rules('username','Username','callback_valid_username');
       $this->form_validation->set_rules('password','Password','trim|required');
@@ -67,7 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
       if($this->form_validation->run() == false) // Neu dang ky that bai
       {
-        $this->load->view('Signup');
+        $this->load->view('main_layout', $this->_data);
       }else { // Dang kky thanh cong
         $data = array(
           'username' => $this->input->post('username'),
@@ -86,7 +90,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                               'username'=>$data['username'],
                                               'usertype' => $userdata->usertype));
 
-          $this->load->view('register_success',array('username'=>$data['username']));
+          $this->load->view('Account/register_success',array('username'=>$data['username']));
         }
 
       }

@@ -1,63 +1,79 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Edit Member</title>
-  </head>
-  <body>
-    <form class="newmember-form" action="<?php echo base_url('Data/Edit/').$member->id ?>" method="post">
-      <input type="text" name="name" value="<?php echo $member->name?>" placeholder="Name">
-      <br>
-      <span>
-        <script type="text/javascript">
-        // Lay ngay sinh cua member
-        var birthdate = new Date("<?php echo $member->birthday; ?>");
+<form class="newmember-form" action="<?php echo base_url('Data/Edit/').$member->id ?>" method="post">
 
-          document.write("<select name='date'>");
-          for(var i = 1 ; i <= 31 ; i++)
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" name="name" value="<?php echo $member->name?>"
+    placeholder="Name" class="form-control">
+  </div>
+
+  <script type="text/javascript">
+    var birthdate = new Date("<?php echo $member->birthday; ?>");
+  </script>
+
+  <div class="row">
+    <div class="col-md-4">
+      <script type="text/javascript">
+        document.write("<select class='form-control' name='date'>");
+        for(var i = 1 ; i <= 31 ; i++)
+        {
+          if(i == birthdate.getDate())
           {
-            if(i == birthdate.getDate())
-            {
-              document.write("<option selected value=" + i + ">"+i +"</option>");
-            }else {
-              document.write("<option value=" + i + ">"+i +"</option>");
-            }
+            document.write("<option selected value=" + i + ">"+i +"</option>");
+          }else {
+            document.write("<option value=" + i + ">"+i +"</option>");
           }
-          document.write("</select>"); // In ra ngay
+        }
+      document.write("</select>"); // In ra ngay
+      </script>
+    </div>
 
-          document.write("<select name='month'>");
-          for(var i = 1 ; i <= 12 ; i++)
+    <div class="col-md-4">
+      <script type="text/javascript">
+        document.write("<select class='form-control' name='month'>");
+        for(var i = 1 ; i <= 12 ; i++)
+        {
+          if(i == birthdate.getMonth() + 1)
           {
-            if(i == birthdate.getMonth() + 1)
-            {
-              document.write("<option selected value=" + i + ">"+ "Thang " + i +"</option>");
-            }else {
-              document.write("<option value=" + i + ">"+ "Thang " + i +"</option>");
-            }
+            document.write("<option selected value=" + i + ">"+ "Thang " + i +"</option>");
+          }else {
+            document.write("<option value=" + i + ">"+ "Thang " + i +"</option>");
           }
-          document.write("</select>"); // In ra thang
+        }
+        document.write("</select>"); // In ra thang
+      </script>
+    </div>
 
-          document.write("<select name='year'>");
-          for(var i = 1900 ; i <= 2017 ; i++)
+    <div class="col-md-4">
+      <script type="text/javascript">
+        document.write("<select class='form-control' name='year'>");
+        for(var i = 1900 ; i <= 2017 ; i++)
+        {
+          if(i == birthdate.getFullYear())
           {
-            if(i == birthdate.getFullYear())
-            {
-              document.write("<option selected value=" + i + ">"+i +"</option>");
-            }else {
-              document.write("<option value=" + i + ">"+i +"</option>");
-            }
+            document.write("<option selected value=" + i + ">"+i +"</option>");
+          }else {
+            document.write("<option value=" + i + ">"+i +"</option>");
           }
-          document.write("</select>"); // In ra nam
-        </script>
-      </span> <br> <!-- Span in ra ngay thang nam -->
+        }
+        document.write("</select>"); // In ra nam
+      </script>
+    </div>
+  </div>
 
-      <input type="text" name="job" value="<?php echo $member->job; ?>" placeholder="Job">
-      <br>
-      <input type="email" name="email" value="<?php echo $member->email ?>" placeholder="Email">
-      <br>
-      <input type="submit" name="add_member_submit" value="Update">
-    </form>
+  <div class="form-group">
+    <label for="job">Job</label>
+    <input type="text" name="job" value="<?php echo $member->job; ?>"
+    placeholder="Job" class="form-control">
+  </div>
 
-    <?php echo validation_errors(); ?>
-  </body>
-</html>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" name="email" value="<?php echo $member->email ?>"
+    placeholder="Email" class="form-control">
+  </div>
+
+  <button type="submit" name="button" class="btn btn-default">Update</button>
+
+</form>
+
+<?php echo validation_errors(); ?>
